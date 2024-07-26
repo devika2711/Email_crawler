@@ -1,0 +1,30 @@
+body {
+    font-family:Georgia, 'Times New Roman', Times, serif;
+    margin-top: 380px;
+    text-align: center;
+    background-color: #83B4FF;
+}
+
+h1, h2 {
+    color: #333;
+}
+
+#auth-form, #dashboard {
+    margin-bottom: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    background-color:lightcoral;
+    border-radius: 7px;
+    color: black;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+
+

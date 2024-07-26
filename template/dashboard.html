@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f9;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .email {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .email p {
+            color: #555;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .response, .edit-response {
+            width: 100%;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <h1>Email Dashboard</h1>
+    <div id="emails">
+        {% for email in emails %}
+        <div class="email">
+            <p>{{ email }}</p>
+            <button onclick="generateResponse('{{ email }}')">Generate Response</button>
+            <div class="response"></div>
+            <textarea class="edit-response" rows="4"></textarea>
+            <button onclick="sendResponse(this)">Send</button>
+        </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        function generate_response(emailContent) {
+            fetch('/generate_response', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email_content: emailContent })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const responseDiv = event.target.nextElementSibling;
+                responseDiv.innerText = data.response;
+                const textarea = responseDiv.nextElementSibling;
+                textarea.value = data.response;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function send_email(button) {
+            const emailResponse = button.previousElementSibling.value;
+            const to = prompt("Enter recipient email:");
+            const subject = prompt("Enter subject:");
+
+            fetch('/send_email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ 
+                    to: to,
+                    subject: subject,
+                    body: emailResponse 
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.status || data.error);
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
